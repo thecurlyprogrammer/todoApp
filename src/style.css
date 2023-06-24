@@ -64,10 +64,9 @@ li {
 .task-text {
   font-family: 'Roboto', sans-serif;
   color: var(--text-200);
-}
-
-.task-text::first-letter {
-  text-transform: uppercase;
+  border: none;
+  background: none;
+  outline: none;
 }
 
 .todo {
@@ -125,3 +124,4 @@ li {
   color: #4A4A4A;
   transition: background-color 0.3s;
 }
+

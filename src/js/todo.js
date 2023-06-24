@@ -18,9 +18,9 @@ export class Todo {
                 // console.log('Task Added');
                 if (this.isInputEmpty(value)) {
                     const newValue = this.createTags(value);
-                    this.createTask(newValue);
+                    const storage = this.saveStorage(newValue);
+                    this.createTask(storage);
                     this.clearInput();
-                    this.saveStorage(newValue);
                 } else {
                     return false;
                 }
@@ -70,11 +70,11 @@ export class Todo {
         // console.log('createTask Init');
         const list = document.querySelector('.todo-list');
         const task = document.createElement('li');
-
-        const text = document.createElement('p');
+        const text = document.createElement('input');
         text.setAttribute('class', 'task-text');
         task.setAttribute('class', 'task');
-        text.textContent = value.title;
+        task.setAttribute('id', value.id);
+        text.value = value.title;
 
         let hashtags = document.createElement('div');
         hashtags.setAttribute('class', 'hashtags');
@@ -85,20 +85,37 @@ export class Todo {
             while (i < value.hashtags.length) {
                 const tag = document.createElement('div');
                 tag.setAttribute('class', 'tag');
-                const mytag = value.hashtags[i];
                 tag.textContent = value.hashtags[i];
                 hashtags.appendChild(tag);
                 i++;
             }
         }
 
+        // Event listener on click
+        text.addEventListener('keydown', (event) => {
+            const inputValue = text.value;
+            console.log('Ho cliccato elemento ' + value);
+            if (event.keyCode === 13) {
+                // console.log('Task Added');
+                if (this.isInputEmpty(inputValue)) {
+                    const storage = this.editTask(inputValue, value.id);
+                } else {
+                    return false;
+                }
+            }
+        })
 
         list.appendChild(task);
-
         task.appendChild(text);
-
         task.appendChild(hashtags);
         return list;
+    }
+
+    editTask(inputValue, id){
+        const storage = JSON.parse(localStorage.getItem("task"));
+        const edit = storage[id-1].title = inputValue;
+        localStorage.setItem("task", JSON.stringify(storage));
+        console.log(edit);
     }
 
     clearInput() {
@@ -110,6 +127,8 @@ export class Todo {
     initStorage() {
         // const storage = localStorage.getItem(this.itemName);
         const sessionObject = this.getStorage();
+
+        // console.log(sessionObject);
 
         const task = [{
             id: 1,
@@ -141,7 +160,6 @@ export class Todo {
         const sessionJson = localStorage.getItem(this.itemName);
         const sessionObject = JSON.parse(sessionJson);
         const sessionSize = sessionObject.length;
-
         const task = {
             id: sessionSize + 1,
             title: value.title,
@@ -152,6 +170,7 @@ export class Todo {
         sessionObject.push(task);
         const updatedSession = JSON.stringify(sessionObject);
         localStorage.setItem('task', updatedSession);
+        return task;
     }
 
     getStorage() {
