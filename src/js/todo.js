@@ -70,7 +70,13 @@ export class Todo {
         // console.log('createTask Init');
         const list = document.querySelector('.todo-list');
         const task = document.createElement('li');
+        const leftContainer = document.createElement('div');
+        const check = document.createElement('input');
+        check.type = "checkbox";
+        check.id = 'check_' + value.id;
+        check.name = 'check_' + value.id;
         const text = document.createElement('input');
+        leftContainer.setAttribute('class', 'leftContainer');
         text.setAttribute('class', 'task-text');
         task.setAttribute('class', 'task');
         task.setAttribute('id', value.id);
@@ -105,10 +111,43 @@ export class Todo {
             }
         })
 
+        // Event listener on click
+        check.addEventListener('change', (event) => {
+            if (event.target.checked) {
+                console.log("Checkbox " + value.id + " selezionata");
+                task.setAttribute('class', 'taskComplete');
+                text.disabled = true;
+                this.completeTask(value.id);
+              } else {
+                console.log("Checkbox deselezionata");
+                task.removeAttribute('class', 'taskComplete');
+                text.disabled = false;
+                this.completeTask(value.id);
+              }
+        })
+
+        if (this.isChecked(value.id)) {
+            task.setAttribute('class', 'taskComplete');
+            text.disabled = true;
+            check.checked = true;
+            console.log(this.isChecked);
+        }
+
         list.appendChild(task);
-        task.appendChild(text);
+        leftContainer.appendChild(check);
+        leftContainer.appendChild(text);
+        task.appendChild(leftContainer);
         task.appendChild(hashtags);
         return list;
+    }
+
+    isChecked(id){
+        const storage = JSON.parse(localStorage.getItem("task"));
+        if (storage[id-1].completed == true) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     editTask(inputValue, id){
@@ -116,6 +155,20 @@ export class Todo {
         const edit = storage[id-1].title = inputValue;
         localStorage.setItem("task", JSON.stringify(storage));
         console.log(edit);
+    }
+
+    completeTask(id){
+        const storage = JSON.parse(localStorage.getItem("task"));
+
+        if (storage[id-1].completed == false) {
+            storage[id-1].completed = true;
+            console.log('checked');
+        } else {
+            storage[id-1].completed = false;
+            console.log('unchecked');
+        }
+
+        localStorage.setItem("task", JSON.stringify(storage));
     }
 
     clearInput() {

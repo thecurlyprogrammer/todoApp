@@ -49,10 +49,12 @@ todo.createList();
 todo.initStorage();
 
 const list = document.querySelector('.todo');
+
 const deleteAllButton = document.createElement('button');
 deleteAllButton.setAttribute('class', 'delete-button');
 deleteAllButton.textContent = 'Elimina tutto';
 deleteAllButton.addEventListener('click', todo.clearStorage);
+
 list.appendChild(deleteAllButton);
 
 // todo.getStorage();

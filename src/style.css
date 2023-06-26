@@ -61,12 +61,17 @@ li {
   border-bottom: 1px solid var(--bg-300);
 }
 
+.taskComplete{
+  background: var(--bg-300);
+}
+
 .task-text {
   font-family: 'Roboto', sans-serif;
   color: var(--text-200);
   border: none;
   background: none;
   outline: none;
+  width: fit-content;
 }
 
 .todo {
